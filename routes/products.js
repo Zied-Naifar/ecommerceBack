@@ -22,9 +22,10 @@ router
 router
   .route("/:id")
   .get(getProduct)
-  .put(updateProduct)
-  .delete(deleteProduct);
+  .put(updateProduct);
 
-router.route("/:id/photo").put(protect, productPhotoUpload);
+router.route("/:id/delete").put(deleteProduct);
+
+router.route("/:id/photo").put(productPhotoUpload);
 
 module.exports = router;

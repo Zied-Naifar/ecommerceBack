@@ -1,14 +1,14 @@
 {
-  "name": "devcamper_api",
+  "name": "ecommerce_api",
   "version": "1.0.0",
-  "description": "Devcamper backend API",
+  "description": "Ecommerce_api backend API",
   "main": "server.js",
   "scripts": {
     "start": "NODE_ENV=production node server",
     "dev": "nodemon server"
   },
-  "author": "Brad Traversy",
-  "license": "MIT",
+  "author": "Zied NAIFAR",
+  "license": "",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",

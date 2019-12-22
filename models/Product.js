@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const ProductSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please add a product name"],
-    unique: true
+    required: [true, "Please add a product name"]
   },
   description: {
     type: String,
@@ -20,6 +19,10 @@ const ProductSchema = new mongoose.Schema({
   },
   productId: {
     type: String
+  },
+  visible: {
+    type: Boolean,
+    default: true
   },
   category: {
     type: String,

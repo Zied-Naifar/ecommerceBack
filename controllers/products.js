@@ -72,7 +72,17 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/v1/products/:id
 // @access    Private
 exports.deleteProduct = asyncHandler(async (req, res, next) => {
-  const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+  const deletedProduct = await Product.findByIdAndUpdate(
+    req.params.id,
+    {
+      visible: false
+    },
+    {
+      new: true
+    }
+  );
+
+  console.log("deletedProduct: ", deletedProduct);
 
   if (deletedProduct) {
     const deletedPhotoPath = `${process.env.FILE_UPLOAD_PATH}/${deletedProduct.photo}`;

@@ -38,12 +38,17 @@ exports.authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
-        new ErrorResponse(
-          `User role ${req.user.role} is not authorized to access this route`,
-          403
-        )
+        new ErrorResponse("Not authorized to access this route", 401)
       );
     }
     next();
   };
 };
+
+exports.adminRegister = asyncHandler(async (req, res, next) => {
+  if (req.body.secretKey === process.env.REGISTER_SECRET_KEY) {
+    next();
+  } else {
+    next(new ErrorResponse("Not authorized to access this route", 401));
+  }
+});

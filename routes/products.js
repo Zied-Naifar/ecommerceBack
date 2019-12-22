@@ -24,8 +24,8 @@ router
   .get(getProduct)
   .put(updateProduct);
 
-router.route("/:id/delete").put(deleteProduct);
+router.put("/:id/delete", deleteProduct);
 
-router.route("/:id/photo").put(productPhotoUpload);
+router.put("/:id/photo", productPhotoUpload);
 
 module.exports = router;

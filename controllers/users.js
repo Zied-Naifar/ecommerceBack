@@ -5,12 +5,16 @@ const User = require("../models/User");
 // @route     GET /api/v1/users
 // @access    Private/Admin
 exports.getUsers = asyncHandler(async (req, res, next) => {
-  res.status(200).json(res.advancedResults);
+  const users = await User.find({ role: "user" });
+  res.status(200).json({
+    success: true,
+    data: users
+  });
 });
 
 // @desc      Get single user
 // @route     GET /api/v1/users/:id
-// @access    Private/Admin
+// @access    Private
 exports.getUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 

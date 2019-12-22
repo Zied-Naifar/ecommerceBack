@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const asyncHandler = require("../middleware/async");
+const ErrorResponse = require("../utils/errorResponse");
 const Product = require("../models/Product");
 const { isEmpty } = require("lodash");
 
@@ -8,7 +9,7 @@ const { isEmpty } = require("lodash");
 // @route     GET /api/v1/products
 // @access    Private
 exports.getProducts = asyncHandler(async (req, res, next) => {
-  const products = await Product.find();
+  const products = await Product.find({ visible: true });
   res.status(200).json({
     success: true,
     data: products
@@ -37,7 +38,7 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
   if (isEmpty(sortedProduct)) {
     productId = 1;
   } else {
-    productId = sortedProduct[0].productId + 1;
+    productId = Number(sortedProduct[0].productId) + 1;
   }
   newProduct = await Product.create({
     ...req.body,
@@ -75,14 +76,13 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
   const deletedProduct = await Product.findByIdAndUpdate(
     req.params.id,
     {
-      visible: false
+      visible: false,
+      photo: "no-photo.jpg"
     },
     {
       new: true
     }
   );
-
-  console.log("deletedProduct: ", deletedProduct);
 
   if (deletedProduct) {
     const deletedPhotoPath = `${process.env.FILE_UPLOAD_PATH}/${deletedProduct.photo}`;

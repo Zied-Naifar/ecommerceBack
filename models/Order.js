@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { isEmpty } = require("lodash");
 
 const OrderSchema = new mongoose.Schema({
   clientName: {
@@ -24,14 +25,25 @@ const OrderSchema = new mongoose.Schema({
       {
         product: {
           type: Schema.Types.ObjectId,
-          ref: "Product"
+          ref: "Product",
+          required: true
         },
         quantity: {
-          type: String
+          type: String,
+          required: true
         }
       }
     ],
-    required: [true, "Please add order products"]
+    validate: {
+      validator: function(e) {
+        if (!isEmpty(e)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      message: () => `You can't pass an empty order`
+    }
   },
   isPrinted: {
     type: Boolean,

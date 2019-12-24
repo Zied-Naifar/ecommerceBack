@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("./async");
-const ErrorResponse = require("../utils/errorResponse");
 const User = require("../models/User");
 
 // Protect routes
@@ -18,7 +17,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   // Make sure token exists
   if (!token) {
-    return next(new ErrorResponse("Not authorized to access this route", 401));
+    res.status(401).json({
+      success: false,
+      errors: {
+        other: "Not authorized to access this route"
+      }
+    });
   }
 
   try {
@@ -29,7 +33,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     next();
   } catch (err) {
-    return next(new ErrorResponse("Not authorized to access this route", 401));
+    res.status(401).json({
+      success: false,
+      errors: {
+        other: "Not authorized to access this route"
+      }
+    });
   }
 });
 
@@ -37,9 +46,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 exports.authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return next(
-        new ErrorResponse("Not authorized to access this route", 401)
-      );
+      res.status(401).json({
+        success: false,
+        errors: {
+          other: "Not authorized to access this route"
+        }
+      });
     }
     next();
   };
@@ -49,6 +61,11 @@ exports.adminRegister = asyncHandler(async (req, res, next) => {
   if (req.body.secretKey === process.env.REGISTER_SECRET_KEY) {
     next();
   } else {
-    next(new ErrorResponse("Not authorized to access this route", 401));
+    res.status(401).json({
+      success: false,
+      errors: {
+        other: "Not authorized to access this route"
+      }
+    });
   }
 });

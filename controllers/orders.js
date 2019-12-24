@@ -1,9 +1,5 @@
-const path = require("path");
-const fs = require("fs");
 const asyncHandler = require("../middleware/async");
-const ErrorResponse = require("../utils/errorResponse");
 const Order = require("../models/Order");
-const { isEmpty } = require("lodash");
 
 // @desc      Get all orders
 // @route     GET /api/v1/orders
@@ -15,8 +11,6 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
       model: "Product"
     })
     .populate("createdBy");
-
-  console.log("orders: ", orders);
 
   res.status(200).json({
     success: true,
@@ -45,7 +39,6 @@ exports.getOrder = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/orders
 // @access    Private
 exports.createOrder = asyncHandler(async (req, res, next) => {
-  console.log("req.body.products: ", req.body.products);
   const orderFields = {};
   orderFields.createdBy = req.user.id;
   if (req.body.clientPhoneNumber)

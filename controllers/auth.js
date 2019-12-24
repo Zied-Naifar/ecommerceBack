@@ -1,5 +1,4 @@
 const crypto = require("crypto");
-const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../models/User");
@@ -29,21 +28,30 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   // Validate emil & password
   if (!email || !password) {
-    return next(new ErrorResponse("Please provide an email and password", 400));
+    res.status(400).json({
+      success: false,
+      errors: { other: "Please provide an email and password" }
+    });
   }
 
   // Check for user
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return next(new ErrorResponse("Invalid credentials", 401));
+    res.status(400).json({
+      success: false,
+      errors: { other: "Invalid credentials" }
+    });
   }
 
   // Check if password matches
   const isMatch = await user.matchPassword(password);
 
   if (!isMatch) {
-    return next(new ErrorResponse("Invalid credentials", 401));
+    res.status(400).json({
+      success: false,
+      errors: { other: "Invalid credentials" }
+    });
   }
 
   sendTokenResponse(user, 200, res);
@@ -104,7 +112,10 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 
   // Check current password
   if (!(await user.matchPassword(req.body.currentPassword))) {
-    return next(new ErrorResponse("Password is incorrect", 401));
+    res.status(400).json({
+      success: true,
+      errors: { currentPassword: "Password is incorrect" }
+    });
   }
 
   user.password = req.body.newPassword;
@@ -120,7 +131,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    return next(new ErrorResponse("There is no user with that email", 404));
+    res.status(404).json({
+      success: true,
+      errors: { email: "There is no user with that email" }
+    });
   }
 
   // Get reset token
@@ -150,7 +164,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    return next(new ErrorResponse("Email could not be sent", 500));
+    res.status(404).json({
+      success: true,
+      errors: { other: "Email could not be sent" }
+    });
   }
 });
 
@@ -170,7 +187,10 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new ErrorResponse("Invalid token", 400));
+    res.status(400).json({
+      success: true,
+      errors: { other: "Invalid token" }
+    });
   }
 
   // Set new password

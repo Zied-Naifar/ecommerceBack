@@ -1,7 +1,6 @@
 const path = require("path");
 const fs = require("fs");
 const asyncHandler = require("../middleware/async");
-const ErrorResponse = require("../utils/errorResponse");
 const Product = require("../models/Product");
 const { isEmpty } = require("lodash");
 
@@ -108,30 +107,37 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
   const product = await Product.findById(req.params.id);
 
   if (!product) {
-    return next(
-      new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
-    );
+    res.status(404).json({
+      success: false,
+      errors: { other: `Product not found with id of ${req.params.id}` }
+    });
   }
 
   if (!req.files) {
-    return next(new ErrorResponse(`Please upload a file`, 400));
+    res.status(400).json({
+      success: false,
+      errors: { other: `Please upload a file` }
+    });
   }
 
   const file = req.files.file;
 
   // Make sure the image is a photo
   if (!file.mimetype.startsWith("image")) {
-    return next(new ErrorResponse(`Please upload an image file`, 400));
+    res.status(400).json({
+      success: false,
+      errors: { other: `Please upload an image file` }
+    });
   }
 
   // Check filesize
   if (file.size > process.env.MAX_FILE_UPLOAD) {
-    return next(
-      new ErrorResponse(
-        `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
-        400
-      )
-    );
+    res.status(400).json({
+      success: false,
+      errors: {
+        other: `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`
+      }
+    });
   }
   // Create custom filename
   file.name = `photo_${product.productId}${path.parse(file.name).ext}`;
@@ -139,7 +145,12 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
   file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
     if (err) {
       console.error(err);
-      return next(new ErrorResponse(`Problem with file upload`, 500));
+      res.status(500).json({
+        success: false,
+        errors: {
+          other: "Problem with file upload"
+        }
+      });
     }
 
     await Product.findByIdAndUpdate(req.params.id, { photo: file.name });

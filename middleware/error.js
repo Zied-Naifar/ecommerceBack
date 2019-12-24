@@ -1,5 +1,3 @@
-const ErrorResponse = require("../utils/errorResponse");
-
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
 
@@ -11,7 +9,10 @@ const errorHandler = (err, req, res, next) => {
   // Mongoose bad ObjectId
   if (err.name === "CastError") {
     const message = `Resource not found`;
-    error = new ErrorResponse(message, 404);
+    res.status(404).json({
+      success: false,
+      errors: { other: message }
+    });
   }
 
   // Mongoose duplicate key
@@ -20,7 +21,10 @@ const errorHandler = (err, req, res, next) => {
       (acc, cur) => ({ ...acc, [cur]: [cur] + " input must be unique." }),
       {}
     );
-    error = new ErrorResponse(JSON.stringify(duplicatedInput), 400);
+    res.status(404).json({
+      success: false,
+      errors: duplicatedInput
+    });
   }
 
   // Mongoose validation error
@@ -29,7 +33,10 @@ const errorHandler = (err, req, res, next) => {
       (acc, cur) => ({ ...acc, [cur.path]: cur.message }),
       {}
     );
-    error = new ErrorResponse(JSON.stringify(message), 400);
+    res.status(404).json({
+      success: false,
+      errors: message
+    });
   }
 
   res.status(error.statusCode || 500).json({

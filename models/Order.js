@@ -1,23 +1,23 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const { isEmpty } = require("lodash");
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const { isEmpty } = require('lodash')
 
 const OrderSchema = new mongoose.Schema({
   clientName: {
     type: String,
-    required: [true, "Please add a valid client name"]
+    required: [true, 'Please add a valid client name']
   },
   clientAddress: {
     type: String,
-    required: [true, "Please add a valid client address"]
+    required: [true, 'Please add a valid client address']
   },
   clientPhoneNumber: {
     type: String,
-    required: [true, "Please add a valid client phone number"]
+    required: [true, 'Please add a valid client phone number']
   },
   createdBy: {
     type: mongoose.Schema.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   },
   products: {
@@ -25,7 +25,7 @@ const OrderSchema = new mongoose.Schema({
       {
         product: {
           type: Schema.Types.ObjectId,
-          ref: "Product",
+          ref: 'Product',
           required: true
         },
         quantity: {
@@ -35,11 +35,11 @@ const OrderSchema = new mongoose.Schema({
       }
     ],
     validate: {
-      validator: function(e) {
+      validator: function (e) {
         if (!isEmpty(e)) {
-          return true;
+          return true
         } else {
-          return false;
+          return false
         }
       },
       message: () => `You can't pass an empty order`
@@ -53,6 +53,6 @@ const OrderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+})
 
-module.exports = mongoose.model("Order", OrderSchema);
+module.exports = mongoose.model('Order', OrderSchema)

@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express')
 const {
   register,
   login,
@@ -8,24 +8,24 @@ const {
   resetPassword,
   updateDetails,
   updatePassword
-} = require("../controllers/auth");
+} = require('../controllers/auth')
 
-const router = express.Router();
+const router = express.Router()
 
-const { protect, adminRegister, authorize } = require("../middleware/auth");
+const { protect, adminRegister, authorize } = require('../middleware/auth')
 
-router.post("/register", adminRegister, register);
-router.post("/login", login);
-router.get("/logout", logout);
-router.get("/me", protect, getMe);
-router.put("/updatedetails", protect, authorize("admin"), updateDetails);
-router.put("/updatepassword", protect, authorize("admin"), updatePassword);
-router.post("/forgotpassword", protect, authorize("admin"), forgotPassword);
+router.post('/register', adminRegister, register)
+router.post('/login', login)
+router.get('/logout', protect, logout)
+router.get('/me', protect, getMe)
+router.put('/updatedetails', protect, authorize('admin'), updateDetails)
+router.put('/updatepassword', protect, authorize('admin'), updatePassword)
+router.post('/forgotpassword', protect, authorize('admin'), forgotPassword)
 router.put(
-  "/resetpassword/:resettoken",
+  '/resetpassword/:resettoken',
   protect,
-  authorize("admin"),
+  authorize('admin'),
   resetPassword
-);
+)
 
-module.exports = router;
+module.exports = router

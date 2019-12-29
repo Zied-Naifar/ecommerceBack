@@ -1,27 +1,27 @@
-const express = require("express");
+const express = require('express')
 const {
   getOrders,
   getOrder,
   createOrder,
   updateOrder,
   deleteOrder
-} = require("../controllers/orders");
+} = require('../controllers/orders')
 
-const router = express.Router({ mergeParams: true });
+const router = express.Router({ mergeParams: true })
 
-const { protect } = require("../middleware/auth");
+const { protect } = require('../middleware/auth')
 
-router.use(protect);
+router.use(protect)
 
 router
-  .route("/")
+  .route('/')
   .get(getOrders)
-  .post(createOrder);
+  .post(createOrder)
 
 router
-  .route("/:id")
+  .route('/:id')
   .get(getOrder)
   .put(updateOrder)
-  .delete(deleteOrder);
+  .delete(deleteOrder)
 
-module.exports = router;
+module.exports = router

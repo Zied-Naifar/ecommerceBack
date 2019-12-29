@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express')
 const {
   getProducts,
   getProduct,
@@ -6,26 +6,26 @@ const {
   updateProduct,
   deleteProduct,
   productPhotoUpload
-} = require("../controllers/products");
+} = require('../controllers/products')
 
-const router = express.Router({ mergeParams: true });
+const router = express.Router({ mergeParams: true })
 
-const { protect } = require("../middleware/auth");
+const { protect } = require('../middleware/auth')
 
 // router.use(protect);
 
 router
-  .route("/")
+  .route('/')
   .get(getProducts)
-  .post(createProduct);
+  .post(createProduct)
 
 router
-  .route("/:id")
+  .route('/:id')
   .get(getProduct)
-  .put(updateProduct);
+  .put(updateProduct)
 
-router.put("/:id/delete", deleteProduct);
+router.put('/:id/delete', deleteProduct)
 
-router.put("/:id/photo", productPhotoUpload);
+router.put('/:id/photo', productPhotoUpload)
 
-module.exports = router;
+module.exports = router

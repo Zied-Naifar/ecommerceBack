@@ -1,5 +1,5 @@
-const asyncHandler = require("../middleware/async");
-const Order = require("../models/Order");
+const asyncHandler = require('../middleware/async')
+const Order = require('../models/Order')
 
 // @desc      Get all orders
 // @route     GET /api/v1/orders
@@ -7,16 +7,16 @@ const Order = require("../models/Order");
 exports.getOrders = asyncHandler(async (req, res, next) => {
   const orders = await Order.find()
     .populate({
-      path: "products.product",
-      model: "Product"
+      path: 'products.product',
+      model: 'Product'
     })
-    .populate("createdBy");
+    .populate('createdBy')
 
   res.status(200).json({
     success: true,
-    data: orders
-  });
-});
+    model: orders
+  })
+})
 
 // @desc      Get single order
 // @route     GET /api/v1/orders/:id
@@ -24,36 +24,35 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
 exports.getOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
     .populate({
-      path: "products.product",
-      model: "Product"
+      path: 'products.product',
+      model: 'Product'
     })
-    .populate("createdBy");
+    .populate('createdBy')
 
   res.status(200).json({
     success: true,
-    data: order
-  });
-});
+    model: order
+  })
+})
 
 // @desc      Create order
 // @route     POST /api/v1/orders
 // @access    Private
 exports.createOrder = asyncHandler(async (req, res, next) => {
-  const orderFields = {};
-  orderFields.createdBy = req.user.id;
+  const orderFields = {}
+  orderFields.createdBy = req.user.id
   if (req.body.clientPhoneNumber)
-    orderFields.clientPhoneNumber = req.body.clientPhoneNumber;
-  if (req.body.clientAddress)
-    orderFields.clientAddress = req.body.clientAddress;
-  if (req.body.clientName) orderFields.clientName = req.body.clientName;
-  if (req.body.products) orderFields.products = req.body.products;
+    orderFields.clientPhoneNumber = req.body.clientPhoneNumber
+  if (req.body.clientAddress) orderFields.clientAddress = req.body.clientAddress
+  if (req.body.clientName) orderFields.clientName = req.body.clientName
+  if (req.body.products) orderFields.products = req.body.products
 
-  const newOrder = await Order.create(orderFields);
+  const newOrder = await Order.create(orderFields)
   res.status(200).json({
     success: true,
-    data: newOrder
-  });
-});
+    model: newOrder
+  })
+})
 
 // @desc      Update order
 // @route     PUT /api/v1/orders/:id
@@ -64,25 +63,25 @@ exports.updateOrder = asyncHandler(async (req, res, next) => {
     runValidators: true
   })
     .populate({
-      path: "products.product",
-      model: "Product"
+      path: 'products.product',
+      model: 'Product'
     })
-    .populate("createdBy");
+    .populate('createdBy')
 
   res.status(200).json({
     success: true,
-    data: updatedOrder
-  });
-});
+    model: updatedOrder
+  })
+})
 
 // @desc      Delete order
 // @route     DELETE /api/v1/orders/:id
 // @access    Private
 exports.deleteOrder = asyncHandler(async (req, res, next) => {
-  const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+  const deletedOrder = await Order.findByIdAndDelete(req.params.id)
 
   res.status(200).json({
     success: true,
-    data: deletedOrder
-  });
-});
+    model: deletedOrder
+  })
+})
